@@ -1,5 +1,6 @@
-import { Reducer, useReducer, useMemo, useRef, useEffect, useCallback, useImperativeHandle } from 'react';
+import { Reducer, useReducer, useMemo, useRef, useEffect, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
+import Test, { ImperativeHandleProps } from './test';
 
 enum ActionTypes {
   add = 'add/todo',
@@ -37,6 +38,7 @@ const reducer: Reducer<StateProps, ActionProps> = (state, action) => {
 
 function App() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const testRef = useRef<ImperativeHandleProps>(null);
   const [{ todo }, dispatch] = useReducer(reducer, initialState);
 
   const addTodo = useCallback(() => {
@@ -59,6 +61,9 @@ function App() {
     console.log('atualizado')
   }, [addTodo])
 
+  console.log(testRef?.current?.alerta());
+  console.log(testRef?.current?.consoleLog());
+
   return (
     <div className="App">
       <input ref={inputRef} type="text" />
@@ -68,6 +73,7 @@ function App() {
         {todos.map(({ id, value }) => <li onClick={() => removeItem(id)} key={id}>{value}</li>)}
       </ul>
       <NavLink to="/test">Ir para teste</NavLink>
+      <Test data="ol nundo" ref={testRef} />
     </div>
   );
 }
