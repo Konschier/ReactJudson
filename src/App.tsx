@@ -1,4 +1,5 @@
-import { Reducer, useReducer, useRef } from 'react';
+import { Reducer, useReducer, useMemo, useRef, useEffect, useCallback, useImperativeHandle } from 'react';
+import { NavLink } from 'react-router-dom';
 
 enum ActionTypes {
   add = 'add/todo',
@@ -38,7 +39,7 @@ function App() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [{ todo }, dispatch] = useReducer(reducer, initialState);
 
-  function addTodo() {
+  const addTodo = useCallback(() => {
     dispatch({ 
       type: ActionTypes.add,
       value: {
@@ -46,11 +47,17 @@ function App() {
         value: inputRef.current?.value
       },
     })
-  }
+  }, [])
 
   function removeItem(id: number) {
-    dispatch({ type: ActionTypes.remove, value: id })
+    dispatch({ type: ActionTypes.remove, value: id });
   }
+
+  const todos = useMemo(() => todo, [todo]);
+
+  useEffect(() => {
+    console.log('atualizado')
+  }, [addTodo])
 
   return (
     <div className="App">
@@ -58,8 +65,9 @@ function App() {
       <button onClick={addTodo}>Salvar</button>
       <br />
       <ul>
-        {todo.map(({ id, value }) => <li onClick={() => removeItem(id)} key={id}>{value}</li>)}
+        {todos.map(({ id, value }) => <li onClick={() => removeItem(id)} key={id}>{value}</li>)}
       </ul>
+      <NavLink to="/test">Ir para teste</NavLink>
     </div>
   );
 }
